@@ -15,7 +15,7 @@
     To get the token, start the developer tools in your browser of choice and navigate to Health > OneDrive Sync > "View devices that have sync errors" whilst watching the network tab. Look for a response such as
     "reports?top=30&filter=cast(TotalErrorCount,%27Int32%27)+ne+0&orderby=UserName+asc" and the Request Header will include the bearer token which can then be copied.
 .EXAMPLE
-    OneDriveHealthSyncReport.ps1 -beartoken "ah334r2hkahihihi332423hihfasi" -reportpath "C:\temp\OneDrive Sync Report 060821.xlsx"
+    OneDriveHealthSyncReport.ps1 -bearertoken "ah334r2hkahihihi332423hihfasi" -reportpath "C:\temp\OneDrive Sync Report 060821.xlsx"
 #>
 
 param (
@@ -45,7 +45,7 @@ $report = Invoke-RestMethod -Method Get -Uri "https://canary.clients.config.offi
 }
 
 Foreach ($user in $report.reports) {
-    if ($user.errorDetails -eq '{}') {
+    if ($user.errorDetails.Count -eq 0) {
         $record = @{
             "userName"                  = ""
             "userEmail"                 = ""
@@ -134,7 +134,7 @@ while ($report.skipToken) {
     }
 
     Foreach ($user in $report.reports) {
-        if ($user.errorDetails -eq '{}') {
+        if ($user.errorDetails.Count -eq 0) {
             $record = @{
                 "userName"                  = ""
                 "userEmail"                 = ""
